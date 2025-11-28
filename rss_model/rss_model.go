@@ -36,8 +36,9 @@ type Enclosure struct {
 }
 
 type RSS struct {
-	Version string  `xml:"rss"`
-	Channel Channel `xml:"channel"`
+	XMLName xml.Name `xml:"rss"`
+	Version string   `xml:"version,attr"`
+	Channel Channel  `xml:"channel"`
 }
 
 func RssGenerator(c *fiber.Ctx) error {
@@ -59,12 +60,17 @@ func RssGenerator(c *fiber.Ctx) error {
 		},
 	}
 
-	feed := Channel{
+	channel := Channel{
 		Title:       "Sample RSS Feed",
 		Link:        "https://techmovement.co.th",
 		Description: "This is a sample RSS feed generated using Golang",
 		PubDate:     timeFormat,
 		Items:       items,
+	}
+
+	feed := RSS{
+		Version: "2.0",
+		Channel: channel,
 	}
 
 	xmlData, err := xml.MarshalIndent(feed, "", "    ")
